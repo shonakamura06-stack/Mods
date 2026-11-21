@@ -66,11 +66,6 @@ final class ExpeditionTracker {
                     "message.brass_expeditions.worlds_complete", visitDimensionsGoal()), false);
             giveReward(player, ExpeditionsConfig.DIMENSIONS_REWARD_ITEM.get(), ExpeditionsConfig.DIMENSIONS_REWARD_COUNT.get());
         }
-        if (flightComplete) {
-            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
-                    "message.brass_expeditions.elytra_flight_complete", elytraFlightBlocksGoal()), false);
-            giveReward(player, ExpeditionsConfig.ELYTRA_REWARD_ITEM.get(), ExpeditionsConfig.ELYTRA_REWARD_COUNT.get());
-        }
     }
 
     static void recordElytraFlight(ServerPlayer player, int blocks) {

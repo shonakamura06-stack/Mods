@@ -1,0 +1,7 @@
+{
+  "command.brass_expeditions.progress": "Expedition progress:",
+  "command.brass_expeditions.biomes": "Distinct biomes surveyed: %s / %s",
+  "command.brass_expeditions.dimensions": "Dimensions visited: %s / %s",
+  "message.brass_expeditions.biome_survey_complete": "Exploration milestone reached: surveyed %s distinct biomes.",
+  "message.brass_expeditions.worlds_complete": "Exploration milestone reached: visited %s distinct dimensions."
+}

@@ -2,6 +2,8 @@
   "command.brass_expeditions.progress": "Progreso de expedición:",
   "command.brass_expeditions.biomes": "Biomas distintos explorados: %s / %s",
   "command.brass_expeditions.dimensions": "Dimensiones visitadas: %s / %s",
+  "command.brass_expeditions.elytra_distance": "Vuelo con élitros registrado: %s / %s bloques",
   "message.brass_expeditions.biome_survey_complete": "Hito de exploración alcanzado: exploraste %s biomas distintos.",
-  "message.brass_expeditions.worlds_complete": "Hito de exploración alcanzado: visitaste %s dimensiones distintas."
+  "message.brass_expeditions.worlds_complete": "Hito de exploración alcanzado: visitaste %s dimensiones distintas.",
+  "message.brass_expeditions.elytra_flight_complete": "Hito de exploración alcanzado: volaste al menos %s bloques con élitros."
 }

@@ -13,6 +13,9 @@ public final class ExpeditionsConfig {
     public static final ModConfigSpec.IntValue VISIT_DIMENSIONS_GOAL = BUILDER
             .comment("Distinct registered dimensions required for the Far Horizons expedition.")
             .defineInRange("visitDimensionsGoal", 3, 1, 1000);
+    public static final ModConfigSpec.IntValue ELYTRA_FLIGHT_BLOCKS_GOAL = BUILDER
+            .comment("Server-observed elytra flight distance in blocks required for Windborne Surveyor.")
+            .defineInRange("elytraFlightBlocksGoal", 5000, 1, 100000000);
     public static final ModConfigSpec.ConfigValue<String> SURVEY_REWARD_ITEM = BUILDER
             .comment("Optional item ID awarded once for completing Surveyor; empty disables the item reward.")
             .define("surveyRewardItem", "", ExpeditionsConfig::isOptionalResourceLocation);
@@ -25,6 +28,12 @@ public final class ExpeditionsConfig {
     public static final ModConfigSpec.IntValue DIMENSIONS_REWARD_COUNT = BUILDER
             .comment("Number of Far Horizons reward items, when an item ID is configured.")
             .defineInRange("dimensionsRewardCount", 1, 1, 64);
+    public static final ModConfigSpec.ConfigValue<String> ELYTRA_REWARD_ITEM = BUILDER
+            .comment("Optional item ID awarded once for Windborne Surveyor; empty disables the item reward.")
+            .define("elytraRewardItem", "", ExpeditionsConfig::isOptionalResourceLocation);
+    public static final ModConfigSpec.IntValue ELYTRA_REWARD_COUNT = BUILDER
+            .comment("Number of Windborne Surveyor reward items, when an item ID is configured.")
+            .defineInRange("elytraRewardCount", 1, 1, 64);
 
     public static final ModConfigSpec SPEC = BUILDER.build();
 

@@ -27,6 +27,7 @@ import net.minecraft.world.level.storage.LevelResource;
 final class ExpeditionTracker {
     static int surveyBiomesGoal() { return ExpeditionsConfig.SURVEY_BIOMES_GOAL.get(); }
     static int visitDimensionsGoal() { return ExpeditionsConfig.VISIT_DIMENSIONS_GOAL.get(); }
+    static int elytraFlightBlocksGoal() { return ExpeditionsConfig.ELYTRA_FLIGHT_BLOCKS_GOAL.get(); }
     private static final String FILE_NAME = "brass_expeditions.json";
     private static final Map<MinecraftServer, WorldProgress> WORLDS = new WeakHashMap<>();
 
@@ -53,7 +54,7 @@ final class ExpeditionTracker {
                 && progress.completed.add("far_horizons");
         if (!changed && !surveyComplete && !worldsComplete) return;
 
-        // Persist the one-time completion flag before issuing a configured item reward.
+        // Persist the one-time completion flags before issuing configured item rewards.
         world.save();
         if (surveyComplete) {
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
@@ -65,13 +66,37 @@ final class ExpeditionTracker {
                     "message.brass_expeditions.worlds_complete", visitDimensionsGoal()), false);
             giveReward(player, ExpeditionsConfig.DIMENSIONS_REWARD_ITEM.get(), ExpeditionsConfig.DIMENSIONS_REWARD_COUNT.get());
         }
+        if (flightComplete) {
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "message.brass_expeditions.elytra_flight_complete", elytraFlightBlocksGoal()), false);
+            giveReward(player, ExpeditionsConfig.ELYTRA_REWARD_ITEM.get(), ExpeditionsConfig.ELYTRA_REWARD_COUNT.get());
+        }
+    }
+
+    static void recordElytraFlight(ServerPlayer player, int blocks) {
+        if (blocks <= 0) return;
+        MinecraftServer server = player.getServer();
+        if (server == null) return;
+        WorldProgress world = world(server);
+        PlayerProgress progress = world.players.computeIfAbsent(player.getUUID(), ignored -> new PlayerProgress());
+        progress.elytraFlightBlocks = Math.min(100_000_000L,
+                progress.elytraFlightBlocks + blocks);
+        boolean complete = progress.elytraFlightBlocks >= elytraFlightBlocksGoal()
+                && progress.completed.add("windborne_surveyor");
+        world.save();
+        if (complete) {
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "message.brass_expeditions.elytra_flight_complete", elytraFlightBlocksGoal()), false);
+            giveReward(player, ExpeditionsConfig.ELYTRA_REWARD_ITEM.get(), ExpeditionsConfig.ELYTRA_REWARD_COUNT.get());
+        }
     }
 
     static Counts counts(ServerPlayer player) {
         MinecraftServer server = player.getServer();
-        if (server == null) return new Counts(0, 0);
+        if (server == null) return new Counts(0, 0, 0);
         PlayerProgress progress = world(server).players.get(player.getUUID());
-        return progress == null ? new Counts(0, 0) : new Counts(progress.biomes.size(), progress.dimensions.size());
+        return progress == null ? new Counts(0, 0, 0)
+                : new Counts(progress.biomes.size(), progress.dimensions.size(), progress.elytraFlightBlocks);
     }
 
     private static void giveReward(ServerPlayer player, String itemId, int amount) {
@@ -122,6 +147,10 @@ final class ExpeditionTracker {
                 readSet(encoded, "biomes", progress.biomes);
                 readSet(encoded, "dimensions", progress.dimensions);
                 readSet(encoded, "completed", progress.completed);
+                if (encoded.has("elytraFlightBlocks") && encoded.get("elytraFlightBlocks").isJsonPrimitive()) {
+                    try { progress.elytraFlightBlocks = Math.max(0, encoded.get("elytraFlightBlocks").getAsLong()); }
+                    catch (RuntimeException ignored) { progress.elytraFlightBlocks = 0; }
+                }
                 result.players.put(id, progress);
             }
         } catch (IOException | RuntimeException error) {
@@ -139,12 +168,13 @@ final class ExpeditionTracker {
         }
     }
 
-    record Counts(int uniqueBiomes, int dimensions) {}
+    record Counts(int uniqueBiomes, int dimensions, long elytraFlightBlocks) {}
 
     private static final class PlayerProgress {
         private final Set<String> biomes = new HashSet<>();
         private final Set<String> dimensions = new HashSet<>();
         private final Set<String> completed = new HashSet<>();
+        private long elytraFlightBlocks;
     }
 
     private static final class WorldProgress {
@@ -162,6 +192,7 @@ final class ExpeditionTracker {
                 encoded.add("biomes", encodeSet(entry.getValue().biomes));
                 encoded.add("dimensions", encodeSet(entry.getValue().dimensions));
                 encoded.add("completed", encodeSet(entry.getValue().completed));
+                encoded.addProperty("elytraFlightBlocks", entry.getValue().elytraFlightBlocks);
                 encodedPlayers.add(entry.getKey().toString(), encoded);
             }
             root.add("players", encodedPlayers);

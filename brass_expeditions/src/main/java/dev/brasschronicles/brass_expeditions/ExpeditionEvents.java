@@ -7,6 +7,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /** Server-only discovery sampling and a per-player progress command. */
@@ -19,6 +20,14 @@ public final class ExpeditionEvents {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.isSpectator()) return;
         if (player.serverLevel().getGameTime() % 40L != 0L) return;
         ExpeditionTracker.sample(player);
+    }
+
+    @SubscribeEvent
+    public static void onLivingTick(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || player.isSpectator()) return;
+        if (player.isFallFlying() && player.tickCount % 20 == 0) {
+            ExpeditionTracker.recordElytraFlight(player, 40);
+        }
     }
 
     @SubscribeEvent
@@ -42,6 +51,8 @@ public final class ExpeditionEvents {
                 counts.uniqueBiomes(), ExpeditionTracker.surveyBiomesGoal()));
         player.sendSystemMessage(Component.translatable("command.brass_expeditions.dimensions",
                 counts.dimensions(), ExpeditionTracker.visitDimensionsGoal()));
+        player.sendSystemMessage(Component.translatable("command.brass_expeditions.elytra_distance",
+                counts.elytraFlightBlocks(), ExpeditionTracker.elytraFlightBlocksGoal()));
         return 1;
     }
 }

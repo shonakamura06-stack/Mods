@@ -1,7 +1,11 @@
 {
   "key.brass_cartography.open_atlas": "Open Brass Atlas",
   "key.brass_cartography.toggle_minimap": "Show/hide minimap",
+  "key.brass_cartography.cycle_minimap_corner": "Move minimap corner",
+  "key.brass_cartography.cycle_minimap_size": "Change minimap size",
   "key.categories.brass_cartography": "Brass Cartography",
+  "message.brass_cartography.minimap_corner_changed": "Minimap moved to the next corner.",
+  "message.brass_cartography.minimap_size_changed": "Minimap cell size: %s",
   "screen.brass_cartography.atlas": "Field Atlas",
   "screen.brass_cartography.death_on": "Death marker: visible",
   "screen.brass_cartography.death_off": "Death marker: hidden",

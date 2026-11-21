@@ -41,5 +41,15 @@ public final class CartographyClientTick {
         while (CartographyModEvents.toggleMinimapKey().consumeClick()) {
             CartographyState.toggleMinimap();
         }
+        while (CartographyModEvents.cycleMinimapCornerKey().consumeClick()) {
+            CartographyState.cycleMinimapCorner();
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "message.brass_cartography.minimap_corner_changed"), true);
+        }
+        while (CartographyModEvents.cycleMinimapSizeKey().consumeClick()) {
+            CartographyState.cycleMinimapSize();
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "message.brass_cartography.minimap_size_changed", CartographyState.minimapTileSize()), true);
+        }
     }
 }

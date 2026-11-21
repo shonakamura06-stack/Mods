@@ -1,7 +1,11 @@
 {
   "key.brass_cartography.open_atlas": "Abrir atlas de latón",
   "key.brass_cartography.toggle_minimap": "Mostrar/ocultar minimapa",
+  "key.brass_cartography.cycle_minimap_corner": "Mover minimapa de esquina",
+  "key.brass_cartography.cycle_minimap_size": "Cambiar tamaño del minimapa",
   "key.categories.brass_cartography": "Cartografía de Latón",
+  "message.brass_cartography.minimap_corner_changed": "Minimapa movido a la siguiente esquina.",
+  "message.brass_cartography.minimap_size_changed": "Tamaño de celda del minimapa: %s",
   "screen.brass_cartography.atlas": "Atlas de campo",
   "screen.brass_cartography.death_on": "Marcador de muerte: visible",
   "screen.brass_cartography.death_off": "Marcador de muerte: oculto",

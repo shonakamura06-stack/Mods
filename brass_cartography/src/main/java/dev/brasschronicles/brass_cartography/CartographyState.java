@@ -14,6 +14,8 @@ public final class CartographyState {
     private static final Path CONFIG = FMLPaths.CONFIGDIR.get().resolve("brass_cartography.properties");
     private static boolean deathMarkerVisible = true;
     private static boolean minimapVisible = true;
+    private static int minimapCorner;
+    private static int minimapSize = 1;
     private static boolean previousAlive = true;
     private static int deathX;
     private static int deathY;
@@ -32,6 +34,8 @@ public final class CartographyState {
         }
         deathMarkerVisible = Boolean.parseBoolean(p.getProperty("deathMarkerVisible", "true"));
         minimapVisible = Boolean.parseBoolean(p.getProperty("minimapVisible", "true"));
+        minimapCorner = Math.floorMod(parseInt(p.getProperty("minimapCorner")), 4);
+        minimapSize = Math.max(0, Math.min(2, parseInt(p.getProperty("minimapSize", "1"))));
         hasDeath = Boolean.parseBoolean(p.getProperty("hasDeath", "false"));
         deathX = parseInt(p.getProperty("deathX"));
         deathY = parseInt(p.getProperty("deathY"));
@@ -48,6 +52,8 @@ public final class CartographyState {
         Properties p = new Properties();
         p.setProperty("deathMarkerVisible", Boolean.toString(deathMarkerVisible));
         p.setProperty("minimapVisible", Boolean.toString(minimapVisible));
+        p.setProperty("minimapCorner", Integer.toString(minimapCorner));
+        p.setProperty("minimapSize", Integer.toString(minimapSize));
         p.setProperty("hasDeath", Boolean.toString(hasDeath));
         p.setProperty("deathX", Integer.toString(deathX));
         p.setProperty("deathY", Integer.toString(deathY));
@@ -64,6 +70,10 @@ public final class CartographyState {
     public static void toggleDeathMarker() { deathMarkerVisible = !deathMarkerVisible; save(); }
     public static void clearDeathMarker() { hasDeath = false; deathDimension = ""; save(); }
     public static void toggleMinimap() { minimapVisible = !minimapVisible; save(); }
+    public static void cycleMinimapCorner() { minimapCorner = (minimapCorner + 1) % 4; save(); }
+    public static void cycleMinimapSize() { minimapSize = (minimapSize + 1) % 3; save(); }
+    public static int minimapCorner() { return minimapCorner; }
+    public static int minimapTileSize() { return 5 + minimapSize; }
     public static boolean deathMarkerVisible() { return deathMarkerVisible; }
     public static boolean minimapVisible() { return minimapVisible; }
     public static boolean hasDeath() { return hasDeath; }

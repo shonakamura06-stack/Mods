@@ -28,16 +28,26 @@ public final class CartographyModEvents {
     private static final KeyMapping TOGGLE_MINIMAP = new KeyMapping(
             "key.brass_cartography.toggle_minimap", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N,
             "key.categories.brass_cartography");
+    private static final KeyMapping CYCLE_MINIMAP_CORNER = new KeyMapping(
+            "key.brass_cartography.cycle_minimap_corner", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F6,
+            "key.categories.brass_cartography");
+    private static final KeyMapping CYCLE_MINIMAP_SIZE = new KeyMapping(
+            "key.brass_cartography.cycle_minimap_size", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F7,
+            "key.categories.brass_cartography");
 
     private CartographyModEvents() {}
 
     public static KeyMapping openAtlasKey() { return OPEN_ATLAS; }
     public static KeyMapping toggleMinimapKey() { return TOGGLE_MINIMAP; }
+    public static KeyMapping cycleMinimapCornerKey() { return CYCLE_MINIMAP_CORNER; }
+    public static KeyMapping cycleMinimapSizeKey() { return CYCLE_MINIMAP_SIZE; }
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(OPEN_ATLAS);
         event.register(TOGGLE_MINIMAP);
+        event.register(CYCLE_MINIMAP_CORNER);
+        event.register(CYCLE_MINIMAP_SIZE);
     }
 
     @SubscribeEvent
@@ -50,13 +60,21 @@ public final class CartographyModEvents {
         if (!CartographyState.minimapVisible() || minecraft.screen != null
                 || minecraft.player == null || minecraft.level == null || minecraft.options.hideGui) return;
 
-        int size = 144;
-        int left = minecraft.getWindow().getGuiScaledWidth() - size - 8;
-        int top = 8;
-        graphics.blit(PANEL, left, top, 0, 0, size, size, 384, 384);
-        int tile = 6;
-        int mapLeft = left + 21;
-        int mapTop = top + 19;
+        int tile = CartographyState.minimapTileSize();
+        int size = tile * MapSampler.SIDE + 42;
+        int corner = CartographyState.minimapCorner();
+        int left = (corner & 1) == 0
+                ? Math.max(8, minecraft.getWindow().getGuiScaledWidth() - size - 8) : 8;
+        int top = (corner & 2) == 0
+                ? 8 : Math.max(8, minecraft.getWindow().getGuiScaledHeight() - size - 8);
+        float panelScale = size / 384.0f;
+        graphics.pose().pushPose();
+        graphics.pose().translate(left, top, 0.0F);
+        graphics.pose().scale(panelScale, panelScale, 1.0F);
+        graphics.blit(PANEL, 0, 0, 0, 0, 384, 384, 384, 384);
+        graphics.pose().popPose();
+        int mapLeft = left + (size - MapSampler.SIDE * tile) / 2;
+        int mapTop = top + (size - MapSampler.SIDE * tile) / 2;
         MapSampler map = CartographyState.MAP;
         for (int y = 0; y < MapSampler.SIDE; y++) {
             for (int x = 0; x < MapSampler.SIDE; x++) {
@@ -86,6 +104,14 @@ public final class CartographyModEvents {
                 int mx = mapLeft + dx * tile + tile / 2;
                 int my = mapTop + dy * tile + tile / 2;
                 graphics.fill(mx - 2, my - 2, mx + 3, my + 3, 0xFF8E542D);
+                String label = marker.name().length() > 12 ? marker.name().substring(0, 12) : marker.name();
+                int labelWidth = minecraft.font.width(label);
+                int labelX = mx + 4;
+                if (labelX + labelWidth > left + size - 6) labelX = mx - labelWidth - 4;
+                labelX = Math.max(left + 4, labelX);
+                int labelY = Math.max(top + 4, Math.min(top + size - 12, my - 4));
+                graphics.fill(labelX - 1, labelY - 1, labelX + labelWidth + 1, labelY + 9, 0xCCDFCEAA);
+                graphics.drawString(minecraft.font, label, labelX, labelY, 0xFF3D2D1E, false);
             }
         }
         graphics.drawString(minecraft.font, Component.literal("N"), left + size - 19, top + 8, 0xFF4B3520, false);

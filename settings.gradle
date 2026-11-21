@@ -1,0 +1,10 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        maven { url = 'https://maven.neoforged.net/releases' }
+    }
+}
+
+rootProject.name = 'brass-chronicles'
+include 'brass_milestones', 'brass_factory', 'brass_expeditions', 'brass_frontier', 'brass_cartography'

@@ -1,0 +1,15 @@
+# Gradle and generated build output
+.gradle/
+**/build/
+**/run/
+
+# IDE files
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# Local OS cruft
+.DS_Store
+Thumbs.db

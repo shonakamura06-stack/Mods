@@ -58,6 +58,11 @@ El usuario pidió no usar imágenes generadas por IA. Los recursos finales será
 6. Perfiles básico y de estrés; revisar guardado, sincronización, distancia, frecuencia y uso de hilo principal.
 7. Hash SHA-256, changelog, licencia, configuración, dependencias requeridas/opcionales y limitaciones publicados junto a cada beta.
 
-## Bloqueo actual
+## Estado de trabajo actual (21 de noviembre de 2026)
 
-Ya se recibió el dato exacto de la instancia: **Minecraft 1.21.1, NeoForge 21.1.267, LWJGL 3.3.3**. Aún falta obtener el manifiesto o los archivos reales de mods para verificar metadatos/dependencias. La carpeta de captura solo enseña nombres. El entorno de trabajo actual no tiene `java` ni `gradle`; antes de afirmar que los JAR están compilados habrá que preparar una compilación reproducible (preferiblemente CI de GitHub) o un entorno de build disponible.
+- La captura fija Minecraft 1.21.1, NeoForge 21.1.267 y LWJGL 3.3.3.
+- Se creó la estructura Gradle de cinco subproyectos NeoForge independientes, sus entradas `@Mod`, metadata y un workflow de GitHub Actions para compilar con Java 21. Es solo el armazón de build; todavía no implementa las funciones finales ni se considera beta.
+- El paquete visual contiene tres estudios de arte dibujados de forma determinista (sin generador de imágenes): mapa de atlas, marco/panel y engranaje animado. Aún no están conectados a la GUI ni constituyen un resource pack terminado.
+- `mods version 1/` no tiene JARs: se añadirán únicamente después de implementar y verificar cada mod.
+- El archivo del Drive sí está localizado, pero `mods.zip` pesa 166 MB y el conector de Drive de esta sesión tiene límite de descarga de 100 MB. No he podido inspeccionar su interior; no se debe afirmar que sus dependencias o arranque estén verificados.
+- Este entorno no incluye `java` ni `gradle`. El workflow se usará como primera comprobación de compilación. Hasta que pase, no afirmaré que los JAR compilan.

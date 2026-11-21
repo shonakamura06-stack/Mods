@@ -1,0 +1,59 @@
+plugins {
+    id 'net.neoforged.gradle.userdev' version '7.0.170' apply false
+}
+
+def commonProperties = new Properties()
+    rootProject.file('gradle.properties').withInputStream { commonProperties.load(it) }
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'net.neoforged.gradle.userdev'
+
+    group = commonProperties.getProperty('mod_group_id')
+    version = commonProperties.getProperty('mod_version')
+    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+    def modProperties = new Properties()
+    file('mod.properties').withInputStream { modProperties.load(it) }
+    def modId = modProperties.getProperty('mod_id')
+    def modName = modProperties.getProperty('mod_name')
+    def modDescription = modProperties.getProperty('mod_description')
+    def modAuthors = commonProperties.getProperty('mod_authors')
+    def modLicense = commonProperties.getProperty('mod_license')
+
+    base { archivesName = "${modId}-1.21.1-${version}" }
+
+    repositories { mavenLocal() }
+
+    dependencies {
+        implementation "net.neoforged:neoforge:${commonProperties.getProperty('neo_version')}"
+    }
+
+    runs {
+        configureEach {
+            modSource project.sourceSets.main
+            systemProperty 'forge.logging.console.level', 'info'
+        }
+        client { }
+        server { argument '--nogui' }
+    }
+
+    tasks.withType(ProcessResources).configureEach {
+        def replaceProperties = [
+            mod_id: modId,
+            mod_name: modName,
+            mod_description: modDescription,
+            mod_authors: modAuthors,
+            mod_license: modLicense,
+            mod_version: project.version,
+            minecraft_version: commonProperties.getProperty('minecraft_version'),
+            minecraft_version_range: commonProperties.getProperty('minecraft_version_range'),
+            neo_version_range: commonProperties.getProperty('neo_version_range'),
+            loader_version_range: commonProperties.getProperty('loader_version_range')
+        ]
+        inputs.properties replaceProperties
+        filesMatching('META-INF/neoforge.mods.toml') { expand replaceProperties }
+    }
+
+    tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+}

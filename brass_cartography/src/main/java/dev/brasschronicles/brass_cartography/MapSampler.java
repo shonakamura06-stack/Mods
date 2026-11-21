@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,6 +39,10 @@ public final class MapSampler {
     private long lastSampleTick = Long.MIN_VALUE;
     private long lastSaveTick = Long.MIN_VALUE;
     private boolean dirty;
+
+    public MapSampler() {
+        for (int[] row : colors) Arrays.fill(row, UNKNOWN);
+    }
 
     public void tick(Level level, int playerX, int playerY, int playerZ, long gameTime) {
         String nextDimension = level.dimension().location().toString();

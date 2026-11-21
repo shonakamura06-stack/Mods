@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import org.lwjgl.glfw.GLFW;
 
 /** Parchment atlas backed by the player's bounded, persistent survey history. */
 public final class AtlasScreen extends Screen {
@@ -16,17 +17,22 @@ public final class AtlasScreen extends Screen {
     private static final int GRID_CENTER = GRID_SIDE / 2;
     private static final int TILE = 8;
     private static int zoom = 0;
+    private int centerCellX;
+    private int centerCellZ;
 
     public AtlasScreen() { super(Component.translatable("screen.brass_cartography.atlas")); }
 
     @Override
     protected void init() {
+        centerOnPlayer();
         int left = (width - PANEL_SIZE) / 2;
         int top = (height - PANEL_SIZE) / 2;
         addRenderableWidget(Button.builder(Component.literal("−"), b -> zoom = Math.max(0, zoom - 1))
                 .bounds(left + 44, top + 320, 62, 20).build());
         addRenderableWidget(Button.builder(Component.literal("+"), b -> zoom = Math.min(4, zoom + 1))
                 .bounds(left + 278, top + 320, 62, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable("screen.brass_cartography.recenter"), b -> centerOnPlayer())
+                .bounds(left + 136, top + 320, 112, 20).build());
         addRenderableWidget(Button.builder(deathLabel(), b -> {
             CartographyState.toggleDeathMarker();
             b.setMessage(deathLabel());
@@ -43,6 +49,24 @@ public final class AtlasScreen extends Screen {
         }).bounds(left + 200, top + 350, 84, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose())
                 .bounds(left + 296, top + 350, 84, 20).build());
+    }
+
+    private void centerOnPlayer() {
+        if (minecraft == null || minecraft.player == null) return;
+        centerCellX = Math.floorDiv(minecraft.player.blockPosition().getX(), MapSampler.BLOCKS_PER_CELL);
+        centerCellZ = Math.floorDiv(minecraft.player.blockPosition().getZ(), MapSampler.BLOCKS_PER_CELL);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        int step = 1 << zoom;
+        if (keyCode == GLFW.GLFW_KEY_LEFT) centerCellX -= step;
+        else if (keyCode == GLFW.GLFW_KEY_RIGHT) centerCellX += step;
+        else if (keyCode == GLFW.GLFW_KEY_UP) centerCellZ -= step;
+        else if (keyCode == GLFW.GLFW_KEY_DOWN) centerCellZ += step;
+        else if (keyCode == GLFW.GLFW_KEY_R) centerOnPlayer();
+        else return super.keyPressed(keyCode, scanCode, modifiers);
+        return true;
     }
 
     private static Component deathLabel() {
@@ -74,8 +98,8 @@ public final class AtlasScreen extends Screen {
 
         for (int gy = 0; gy < GRID_SIDE; gy++) {
             for (int gx = 0; gx < GRID_SIDE; gx++) {
-                int cellX = playerCellX + (gx - GRID_CENTER) * scale;
-                int cellZ = playerCellZ + (gy - GRID_CENTER) * scale;
+                int cellX = centerCellX + (gx - GRID_CENTER) * scale;
+                int cellZ = centerCellZ + (gy - GRID_CENTER) * scale;
                 int surveyed = map.exploredColor(cellX, cellZ);
                 int color = surveyed < 0 ? 0xFF62503B : (surveyed | 0xFF000000);
                 int x1 = mapLeft + gx * TILE;
@@ -88,10 +112,16 @@ public final class AtlasScreen extends Screen {
         }
 
         // Player marker, north reference, and remembered death location.
-        int centerX = mapLeft + GRID_CENTER * TILE + TILE / 2;
-        int centerY = mapTop + GRID_CENTER * TILE + TILE / 2;
-        graphics.fill(centerX - 4, centerY - 4, centerX + 5, centerY + 5, 0xFF3B2B1B);
-        graphics.fill(centerX - 2, centerY - 2, centerX + 3, centerY + 3, 0xFFE0B55E);
+        if (minecraft != null && minecraft.player != null) {
+            int playerGridX = GRID_CENTER + Math.floorDiv(playerCellX - centerCellX, scale);
+            int playerGridY = GRID_CENTER + Math.floorDiv(playerCellZ - centerCellZ, scale);
+            if (playerGridX >= 0 && playerGridX < GRID_SIDE && playerGridY >= 0 && playerGridY < GRID_SIDE) {
+                int playerMarkerX = mapLeft + playerGridX * TILE + TILE / 2;
+                int playerMarkerY = mapTop + playerGridY * TILE + TILE / 2;
+                graphics.fill(playerMarkerX - 4, playerMarkerY - 4, playerMarkerX + 5, playerMarkerY + 5, 0xFF3B2B1B);
+                graphics.fill(playerMarkerX - 2, playerMarkerY - 2, playerMarkerX + 3, playerMarkerY + 3, 0xFFE0B55E);
+            }
+        }
         graphics.drawString(font, Component.literal("N ↑"), mapLeft + GRID_SIDE * TILE - 30, mapTop - 13, 0xFF4B3520, false);
 
         Level level = minecraft == null ? null : minecraft.level;
@@ -99,8 +129,8 @@ public final class AtlasScreen extends Screen {
                 && CartographyState.deathIsIn(level.dimension().location())) {
             int deathCellX = Math.floorDiv(CartographyState.deathX(), MapSampler.BLOCKS_PER_CELL);
             int deathCellZ = Math.floorDiv(CartographyState.deathZ(), MapSampler.BLOCKS_PER_CELL);
-            int gx = GRID_CENTER + Math.floorDiv(deathCellX - playerCellX, scale);
-            int gy = GRID_CENTER + Math.floorDiv(deathCellZ - playerCellZ, scale);
+            int gx = GRID_CENTER + Math.floorDiv(deathCellX - centerCellX, scale);
+            int gy = GRID_CENTER + Math.floorDiv(deathCellZ - centerCellZ, scale);
             if (gx >= 0 && gx < GRID_SIDE && gy >= 0 && gy < GRID_SIDE) {
                 int mx = mapLeft + gx * TILE + TILE / 2;
                 int my = mapTop + gy * TILE + TILE / 2;
@@ -113,8 +143,8 @@ public final class AtlasScreen extends Screen {
                 if (!marker.dimension().equals(level.dimension().location().toString())) continue;
                 int cellX = Math.floorDiv(marker.x(), MapSampler.BLOCKS_PER_CELL);
                 int cellZ = Math.floorDiv(marker.z(), MapSampler.BLOCKS_PER_CELL);
-                int gx = GRID_CENTER + Math.floorDiv(cellX - playerCellX, scale);
-                int gy = GRID_CENTER + Math.floorDiv(cellZ - playerCellZ, scale);
+                int gx = GRID_CENTER + Math.floorDiv(cellX - centerCellX, scale);
+                int gy = GRID_CENTER + Math.floorDiv(cellZ - centerCellZ, scale);
                 if (gx < 0 || gx >= GRID_SIDE || gy < 0 || gy >= GRID_SIDE) continue;
                 int mx = mapLeft + gx * TILE + TILE / 2;
                 int my = mapTop + gy * TILE + TILE / 2;
@@ -125,8 +155,8 @@ public final class AtlasScreen extends Screen {
         }
 
         if (minecraft != null && minecraft.player != null) {
-            String coords = "X " + minecraft.player.blockPosition().getX() + "   Z "
-                    + minecraft.player.blockPosition().getZ() + "   1:" + (8 * scale);
+            String coords = "X " + (centerCellX * MapSampler.BLOCKS_PER_CELL) + "   Z "
+                    + (centerCellZ * MapSampler.BLOCKS_PER_CELL) + "   1:" + (8 * scale);
             graphics.drawCenteredString(font, coords, width / 2, top + 309, 0x493724);
         }
         super.render(graphics, mouseX, mouseY, partialTick);

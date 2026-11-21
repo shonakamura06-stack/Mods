@@ -7,6 +7,7 @@
   "message.brass_cartography.minimap_corner_changed": "Minimapa movido a la siguiente esquina.",
   "message.brass_cartography.minimap_size_changed": "Tamaño de celda del minimapa: %s",
   "screen.brass_cartography.atlas": "Atlas de campo",
+  "screen.brass_cartography.recenter": "Centrar (R)",
   "screen.brass_cartography.death_on": "Marcador de muerte: visible",
   "screen.brass_cartography.death_off": "Marcador de muerte: oculto",
   "screen.brass_cartography.clear_death": "Borrar muerte",

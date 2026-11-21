@@ -7,6 +7,7 @@
   "message.brass_cartography.minimap_corner_changed": "Minimap moved to the next corner.",
   "message.brass_cartography.minimap_size_changed": "Minimap cell size: %s",
   "screen.brass_cartography.atlas": "Field Atlas",
+  "screen.brass_cartography.recenter": "Recenter (R)",
   "screen.brass_cartography.death_on": "Death marker: visible",
   "screen.brass_cartography.death_off": "Death marker: hidden",
   "screen.brass_cartography.clear_death": "Clear death",

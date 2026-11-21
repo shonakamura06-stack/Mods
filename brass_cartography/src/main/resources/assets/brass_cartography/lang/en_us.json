@@ -1,0 +1,9 @@
+{
+  "key.brass_cartography.open_atlas": "Open Brass Atlas",
+  "key.categories.brass_cartography": "Brass Cartography",
+  "screen.brass_cartography.atlas": "Field Atlas",
+  "screen.brass_cartography.death_on": "Death marker: visible",
+  "screen.brass_cartography.death_off": "Death marker: hidden",
+  "screen.brass_cartography.minimap_on": "Minimap: visible",
+  "screen.brass_cartography.minimap_off": "Minimap: hidden"
+}

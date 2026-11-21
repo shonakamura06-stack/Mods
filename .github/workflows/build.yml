@@ -13,6 +13,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -21,5 +22,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Configure Gradle caching
+        uses: gradle/actions/setup-gradle@v4
       - name: Build all five independent mod projects
-        run: ./gradlew --no-daemon clean build
+        run: ./gradlew --no-daemon --console=plain --stacktrace --info clean build

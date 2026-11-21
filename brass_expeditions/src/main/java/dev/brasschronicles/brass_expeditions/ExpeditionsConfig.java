@@ -14,7 +14,7 @@ public final class ExpeditionsConfig {
             .comment("Distinct registered dimensions required for the Far Horizons expedition.")
             .defineInRange("visitDimensionsGoal", 3, 1, 1000);
     public static final ModConfigSpec.IntValue ELYTRA_FLIGHT_BLOCKS_GOAL = BUILDER
-            .comment("Server-observed elytra flight distance in blocks required for Windborne Surveyor.")
+            .comment("Server-sampled elytra travel distance in blocks required for Windborne Surveyor.")
             .defineInRange("elytraFlightBlocksGoal", 5000, 1, 100000000);
     public static final ModConfigSpec.ConfigValue<String> SURVEY_REWARD_ITEM = BUILDER
             .comment("Optional item ID awarded once for completing Surveyor; empty disables the item reward.")

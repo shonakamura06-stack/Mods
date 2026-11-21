@@ -74,11 +74,13 @@ final class ExpeditionTracker {
         if (server == null) return;
         WorldProgress world = world(server);
         PlayerProgress progress = world.players.computeIfAbsent(player.getUUID(), ignored -> new PlayerProgress());
+        long previousDistance = progress.elytraFlightBlocks;
         progress.elytraFlightBlocks = Math.min(100_000_000L,
                 progress.elytraFlightBlocks + blocks);
         boolean complete = progress.elytraFlightBlocks >= elytraFlightBlocksGoal()
                 && progress.completed.add("windborne_surveyor");
-        world.save();
+        // Batch disk writes; a server stop can lose at most 249 newly sampled flight blocks.
+        if (complete || previousDistance / 250 != progress.elytraFlightBlocks / 250) world.save();
         if (complete) {
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
                     "message.brass_expeditions.elytra_flight_complete", elytraFlightBlocksGoal()), false);

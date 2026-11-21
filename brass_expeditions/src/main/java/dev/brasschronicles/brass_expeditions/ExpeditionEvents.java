@@ -2,7 +2,11 @@ package dev.brasschronicles.brass_expeditions;
 
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -13,6 +17,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 /** Server-only discovery sampling and a per-player progress command. */
 @EventBusSubscriber(modid = BrassExpeditions.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class ExpeditionEvents {
+    private static final Map<UUID, FlightSample> FLIGHT_SAMPLES = new HashMap<>();
+
     private ExpeditionEvents() {}
 
     @SubscribeEvent
@@ -24,10 +30,28 @@ public final class ExpeditionEvents {
 
     @SubscribeEvent
     public static void onLivingTick(EntityTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || player.isSpectator()) return;
-        if (player.isFallFlying() && player.tickCount % 20 == 0) {
-            ExpeditionTracker.recordElytraFlight(player, 40);
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (player.isSpectator() || !player.isFallFlying()) {
+            FLIGHT_SAMPLES.remove(player.getUUID());
+            return;
         }
+        if (player.tickCount % 20 != 0) return;
+
+        UUID id = player.getUUID();
+        Vec3 current = player.position();
+        String dimension = player.serverLevel().dimension().location().toString();
+        FlightSample previous = FLIGHT_SAMPLES.put(id, new FlightSample(dimension, current));
+        if (previous == null || !previous.dimension().equals(dimension)) return;
+        double traveled = current.distanceTo(previous.position());
+        // Reject implausible teleports/discontinuities rather than crediting arbitrary movement.
+        if (traveled > 0.0 && traveled <= 120.0) {
+            ExpeditionTracker.recordElytraFlight(player, (int) Math.round(traveled));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        FLIGHT_SAMPLES.remove(event.getEntity().getUUID());
     }
 
     @SubscribeEvent

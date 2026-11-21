@@ -7,7 +7,7 @@ Este subproyecto implementa solo la primera capa del mod; no es todavía una cam
 - Seguimiento autoritativo del servidor: cada 40 ticks examina únicamente el bioma/dimensión actuales; los cambios de dimensión se registran en el evento del servidor, así que una visita corta no se pierde. No hay barridos del mundo.
 - Progreso aislado por mundo y UUID de jugador, guardado en `data/brass_expeditions.json` dentro del mundo.
 - Comando de consulta personal: `/expeditions`.
-- Tres hitos iniciales verificables por servidor: Surveyor (biomas distintos), Far Horizons (dimensiones distintas) y Windborne Surveyor (distancia volada en élitros, acumulada solo mientras el servidor observa al jugador en estado de planeo). Los IDs de dimensión se leen de claves registradas; cualquier dimensión modded puede contar.
+- Tres hitos iniciales comprobados en servidor: Surveyor (biomas distintos), Far Horizons (dimensiones distintas) y Windborne Surveyor (distancia recta recorrida por segundo entre muestras mientras el servidor observa el planeo; saltos superiores a 120 bloques por muestra se descartan). Los IDs de dimensión se leen de claves registradas; cualquier dimensión modded puede contar.
 - Umbrales y premios de ítem opcionales ajustables con la configuración `SERVER` de NeoForge. Si se configura un ítem inexistente, no se entrega y se escribe una advertencia en el log.
 
 ## Configuración
@@ -16,7 +16,7 @@ NeoForge crea la configuración de servidor `brass_expeditions-server.toml` en `
 
 - `surveyBiomesGoal` (predeterminado 10)
 - `visitDimensionsGoal` (predeterminado 3)
-- `elytraFlightBlocksGoal` (predeterminado 5000; avance en bloques aproximados basado en ticks de planeo observados)
+- `elytraFlightBlocksGoal` (predeterminado 5000; avance estimado por muestras de posición del servidor durante planeo)
 - `surveyRewardItem` y `surveyRewardCount` (predeterminado: premio desactivado)
 - `dimensionsRewardItem` y `dimensionsRewardCount` (predeterminado: premio desactivado)
 - `elytraRewardItem` y `elytraRewardCount` (predeterminado: premio desactivado)

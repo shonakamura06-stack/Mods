@@ -1,7 +1,7 @@
 # Paquete visual Create: Pergamino de Latón
 
-Paquete de recursos aparte de los cinco mods. La primera fase de arte está en `pack/assets/create_fantasy_ui/textures/gui/`; todavía no se conecta a pantallas vanilla ni es un paquete de recursos listo para activar.
+Paquete de recursos separado de los cinco mods. `pack/pack.mcmeta` lo declara compatible con la versión de recursos 34 de Minecraft 1.21.1. Actualmente reemplaza sprites vanilla de botones y controles deslizantes, y conserva estudios originales de atlas, panel y engranaje bajo su propio namespace. Los PNG y metadatos de escalado se dibujan de forma reproducible con `tools/draw_assets.py` y `tools/draw_widget_sprites.py`.
 
-La dirección aprobada es pergamino medieval ilustrado con latón/casing cálido, engranajes, tornillería y palancas. Se dibujaron a mano mediante primitivas y rutas deterministas tres estudios originales: atlas enmarcado, panel de pergamino/latón y engranaje animado. El script reproducible está en `tools/draw_assets.py`. Son base de diseño para el atlas del mod; se revisarán densidad, legibilidad a escala de interfaz y animación antes de marcarlos como finales.
+La dirección visual es pergamino medieval ilustrado con latón/casing cálido, engranajes, tornillería y palancas. Todo el arte está hecho por código con primitivas deterministas; no hay arte generado por IA ni se incluyen/copían referencias (incluidas las que tenían marca de agua).
 
-El objetivo posterior es rediseñar menú principal, botones y pantallas de configuración/lobby de forma independiente y desactivable. Las texturas no usan generación de imágenes. Las imágenes compartidas son referencias de estilo (una muestra de mapa con marca de agua); no se copian ni distribuyen dentro del pack.
+Este paquete es todavía una primera fase: no se ha abierto en cliente 1.21.1, faltan el fondo del menú principal, las pantallas de configuración/lobby y una revisión visual de legibilidad/contraste. Se puede activar/desactivar como cualquier paquete de recursos; no es dependencia de los mods.

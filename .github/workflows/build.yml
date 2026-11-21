@@ -24,6 +24,8 @@ jobs:
           java-version: '21'
       - name: Configure Gradle caching
         uses: gradle/actions/setup-gradle@v4
+      - name: Validate original UI resource pack
+        run: python3 create-fantasy-ui/tools/validate_pack.py
       - name: Verify Gradle wrapper
         run: timeout 8m ./gradlew --no-daemon --console=plain --version
       - name: Configure NeoForge projects

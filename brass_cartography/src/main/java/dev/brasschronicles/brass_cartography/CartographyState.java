@@ -3,6 +3,7 @@ package dev.brasschronicles.brass_cartography;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.loading.FMLPaths;
@@ -19,6 +20,7 @@ public final class CartographyState {
     private static int deathZ;
     private static String deathDimension = "";
     private static boolean hasDeath;
+    private static List<WaypointMarker> waystones = List.of();
 
     private CartographyState() {}
 
@@ -67,6 +69,8 @@ public final class CartographyState {
     public static int deathX() { return deathX; }
     public static int deathY() { return deathY; }
     public static int deathZ() { return deathZ; }
+    public static List<WaypointMarker> waystones() { return waystones; }
+    public static void setWaystones(List<WaypointMarker> value) { waystones = List.copyOf(value); }
     public static boolean deathIsIn(ResourceLocation dimension) {
         return hasDeath && dimension != null && dimension.toString().equals(deathDimension);
     }

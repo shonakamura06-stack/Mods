@@ -78,6 +78,16 @@ public final class CartographyModEvents {
                 graphics.fill(mx, my - 2, mx + 1, my + 3, 0xFF9B3528);
             }
         }
+        for (WaypointMarker marker : CartographyState.waystones()) {
+            if (!marker.dimension().equals(minecraft.level.dimension().location().toString())) continue;
+            int dx = map.deathCellX(marker.x());
+            int dy = map.deathCellY(marker.z());
+            if (dx >= 0 && dx < MapSampler.SIDE && dy >= 0 && dy < MapSampler.SIDE) {
+                int mx = mapLeft + dx * tile + tile / 2;
+                int my = mapTop + dy * tile + tile / 2;
+                graphics.fill(mx - 2, my - 2, mx + 3, my + 3, 0xFF8E542D);
+            }
+        }
         graphics.drawString(minecraft.font, Component.literal("N"), left + size - 19, top + 8, 0xFF4B3520, false);
     }
 }

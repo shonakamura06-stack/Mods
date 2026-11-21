@@ -102,6 +102,21 @@ public final class AtlasScreen extends Screen {
                 graphics.fill(mx - 1, my - 3, mx + 2, my + 4, 0xFF9B3528);
             }
         }
+        if (level != null) {
+            for (WaypointMarker marker : CartographyState.waystones()) {
+                if (!marker.dimension().equals(level.dimension().location().toString())) continue;
+                int cellX = Math.floorDiv(marker.x(), MapSampler.BLOCKS_PER_CELL);
+                int cellZ = Math.floorDiv(marker.z(), MapSampler.BLOCKS_PER_CELL);
+                int gx = GRID_CENTER + Math.floorDiv(cellX - playerCellX, scale);
+                int gy = GRID_CENTER + Math.floorDiv(cellZ - playerCellZ, scale);
+                if (gx < 0 || gx >= GRID_SIDE || gy < 0 || gy >= GRID_SIDE) continue;
+                int mx = mapLeft + gx * TILE + TILE / 2;
+                int my = mapTop + gy * TILE + TILE / 2;
+                graphics.fill(mx - 3, my - 3, mx + 4, my + 4, 0xFF8E542D);
+                String label = marker.name().length() > 12 ? marker.name().substring(0, 12) : marker.name();
+                graphics.drawString(font, label, mx + 5, my - 3, 0xFF3D2D1E, true);
+            }
+        }
 
         if (minecraft != null && minecraft.player != null) {
             String coords = "X " + minecraft.player.blockPosition().getX() + "   Z "

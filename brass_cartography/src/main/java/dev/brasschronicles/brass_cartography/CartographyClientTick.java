@@ -22,12 +22,16 @@ public final class CartographyClientTick {
         }
         if (minecraft.level == null || minecraft.player == null) {
             CartographyState.MAP.flush();
+            CartographyState.setWaystones(java.util.List.of());
             return;
         }
 
         var player = minecraft.player;
         var position = player.blockPosition();
         CartographyState.MAP.tick(minecraft.level, position.getX(), position.getY(), position.getZ(), minecraft.level.getGameTime());
+        if (minecraft.level.getGameTime() % 40 == 0) {
+            CartographyState.setWaystones(WaystonesCompat.readActivated(player));
+        }
         CartographyState.observeLife(player.isAlive(), position.getX(), position.getY(), position.getZ(),
                 minecraft.level.dimension().location());
 

@@ -15,14 +15,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
 
 /** Server-authoritative exploration records, isolated by world and player UUID. */
 final class ExpeditionTracker {
-    static final int SURVEY_BIOMES_GOAL = 10;
-    static final int VISIT_DIMENSIONS_GOAL = 3;
+    static int surveyBiomesGoal() { return ExpeditionsConfig.SURVEY_BIOMES_GOAL.get(); }
+    static int visitDimensionsGoal() { return ExpeditionsConfig.VISIT_DIMENSIONS_GOAL.get(); }
     private static final String FILE_NAME = "brass_expeditions.json";
     private static final Map<MinecraftServer, WorldProgress> WORLDS = new WeakHashMap<>();
 
@@ -43,16 +47,23 @@ final class ExpeditionTracker {
         progress.dimensions.add(player.serverLevel().dimension().location().toString());
 
         boolean changed = biomesBefore != progress.biomes.size() || dimensionsBefore != progress.dimensions.size();
-        if (!changed) return;
+        boolean surveyComplete = progress.biomes.size() >= surveyBiomesGoal()
+                && progress.completed.add("surveyor");
+        boolean worldsComplete = progress.dimensions.size() >= visitDimensionsGoal()
+                && progress.completed.add("far_horizons");
+        if (!changed && !surveyComplete && !worldsComplete) return;
 
+        // Persist the one-time completion flag before issuing a configured item reward.
         world.save();
-        if (biomesBefore < SURVEY_BIOMES_GOAL && progress.biomes.size() >= SURVEY_BIOMES_GOAL) {
+        if (surveyComplete) {
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
-                    "message.brass_expeditions.biome_survey_complete", SURVEY_BIOMES_GOAL), false);
+                    "message.brass_expeditions.biome_survey_complete", surveyBiomesGoal()), false);
+            giveReward(player, ExpeditionsConfig.SURVEY_REWARD_ITEM.get(), ExpeditionsConfig.SURVEY_REWARD_COUNT.get());
         }
-        if (dimensionsBefore < VISIT_DIMENSIONS_GOAL && progress.dimensions.size() >= VISIT_DIMENSIONS_GOAL) {
+        if (worldsComplete) {
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
-                    "message.brass_expeditions.worlds_complete", VISIT_DIMENSIONS_GOAL), false);
+                    "message.brass_expeditions.worlds_complete", visitDimensionsGoal()), false);
+            giveReward(player, ExpeditionsConfig.DIMENSIONS_REWARD_ITEM.get(), ExpeditionsConfig.DIMENSIONS_REWARD_COUNT.get());
         }
     }
 
@@ -61,6 +72,28 @@ final class ExpeditionTracker {
         if (server == null) return new Counts(0, 0);
         PlayerProgress progress = world(server).players.get(player.getUUID());
         return progress == null ? new Counts(0, 0) : new Counts(progress.biomes.size(), progress.dimensions.size());
+    }
+
+    private static void giveReward(ServerPlayer player, String itemId, int amount) {
+        if (itemId == null || itemId.isBlank() || amount <= 0) return;
+        ResourceLocation id = ResourceLocation.tryParse(itemId);
+        if (id == null) {
+            BrassExpeditions.LOGGER.warn("Invalid expedition reward item ID: {}", itemId);
+            return;
+        }
+        Item item = BuiltInRegistries.ITEM.getOptional(id).orElse(null);
+        if (item == null) {
+            BrassExpeditions.LOGGER.warn("Unknown expedition reward item ID: {}", itemId);
+            return;
+        }
+        int remaining = amount;
+        while (remaining > 0) {
+            int count = Math.min(remaining, item.getDefaultMaxStackSize());
+            ItemStack stack = new ItemStack(item, count);
+            player.getInventory().add(stack);
+            if (!stack.isEmpty()) player.drop(stack, false);
+            remaining -= count;
+        }
     }
 
     private static WorldProgress world(MinecraftServer server) {
@@ -88,6 +121,7 @@ final class ExpeditionTracker {
                 PlayerProgress progress = new PlayerProgress();
                 readSet(encoded, "biomes", progress.biomes);
                 readSet(encoded, "dimensions", progress.dimensions);
+                readSet(encoded, "completed", progress.completed);
                 result.players.put(id, progress);
             }
         } catch (IOException | RuntimeException error) {
@@ -110,6 +144,7 @@ final class ExpeditionTracker {
     private static final class PlayerProgress {
         private final Set<String> biomes = new HashSet<>();
         private final Set<String> dimensions = new HashSet<>();
+        private final Set<String> completed = new HashSet<>();
     }
 
     private static final class WorldProgress {
@@ -126,6 +161,7 @@ final class ExpeditionTracker {
                 JsonObject encoded = new JsonObject();
                 encoded.add("biomes", encodeSet(entry.getValue().biomes));
                 encoded.add("dimensions", encodeSet(entry.getValue().dimensions));
+                encoded.add("completed", encodeSet(entry.getValue().completed));
                 encodedPlayers.add(entry.getKey().toString(), encoded);
             }
             root.add("players", encodedPlayers);

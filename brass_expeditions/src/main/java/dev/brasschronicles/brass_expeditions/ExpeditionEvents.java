@@ -30,9 +30,9 @@ public final class ExpeditionEvents {
         ExpeditionTracker.Counts counts = ExpeditionTracker.counts(player);
         player.sendSystemMessage(Component.translatable("command.brass_expeditions.progress"));
         player.sendSystemMessage(Component.translatable("command.brass_expeditions.biomes",
-                counts.uniqueBiomes(), ExpeditionTracker.SURVEY_BIOMES_GOAL));
+                counts.uniqueBiomes(), ExpeditionTracker.surveyBiomesGoal()));
         player.sendSystemMessage(Component.translatable("command.brass_expeditions.dimensions",
-                counts.dimensions(), ExpeditionTracker.VISIT_DIMENSIONS_GOAL));
+                counts.dimensions(), ExpeditionTracker.visitDimensionsGoal()));
         return 1;
     }
 }

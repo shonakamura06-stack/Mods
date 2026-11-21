@@ -58,7 +58,7 @@ El usuario pidió no usar imágenes generadas por IA. Los recursos finales será
 6. Perfiles básico y de estrés; revisar guardado, sincronización, distancia, frecuencia y uso de hilo principal.
 7. Hash SHA-256, changelog, licencia, configuración, dependencias requeridas/opcionales y limitaciones publicados junto a cada beta.
 
-## Estado de trabajo actual (21 de noviembre de 2026)
+## Estado de trabajo actual (20 de noviembre de 2026)
 
 - La captura fija Minecraft 1.21.1, NeoForge 21.1.267 y LWJGL 3.3.3.
 - Se creó la estructura Gradle de cinco subproyectos NeoForge independientes, sus entradas `@Mod`, metadata y un workflow de GitHub Actions para compilar con Java 21.
@@ -67,4 +67,4 @@ El usuario pidió no usar imágenes generadas por IA. Los recursos finales será
 - El paquete visual contiene tres estudios de arte dibujados de forma determinista (sin generador de imágenes): mapa de atlas, marco/panel y engranaje animado. El panel ya se usa como marco del atlas; el resto aún no está conectado a una interfaz final ni constituye un resource pack terminado.
 - `mods version 1/` no tiene JARs: se añadirán únicamente después de implementar y verificar cada mod.
 - El archivo del Drive sí está localizado, pero `mods.zip` pesa 166 MB y el conector de Drive de esta sesión tiene límite de descarga de 100 MB. No he podido inspeccionar su interior; no se debe afirmar que sus dependencias o arranque estén verificados.
-- Este entorno no incluye `java` ni `gradle`. El workflow se usará como primera comprobación de compilación. Hasta que pase, no afirmaré que los JAR compilan.
+- El entorno de edición no tiene un JDK/Gradle instalados de forma local; el JRE auxiliar de Java 21 disponible no incluye `javac`. La CI remota ya compiló la base Cartografía y Expediciones con Java 21 / NeoForge 21.1.267. La compilación no sustituye inicio real en cliente/servidor ni pruebas del modpack.

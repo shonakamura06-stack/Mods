@@ -79,4 +79,6 @@ public final class ExpeditionEvents {
                 counts.elytraFlightBlocks(), ExpeditionTracker.elytraFlightBlocksGoal()));
         return 1;
     }
+
+    private record FlightSample(String dimension, Vec3 position) {}
 }

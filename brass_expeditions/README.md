@@ -21,7 +21,7 @@ NeoForge crea la configuración de servidor `brass_expeditions-server.toml` en `
 - `dimensionsRewardItem` y `dimensionsRewardCount` (predeterminado: premio desactivado)
 - `elytraRewardItem` y `elytraRewardCount` (predeterminado: premio desactivado)
 
-Reinicia el servidor tras modificar el archivo si NeoForge no recarga esa configuración. Un premio se registra como completado una sola vez por UUID y mundo; los objetos que no caben en el inventario se dejan caer junto al jugador. En este prototipo, un cierre abrupto entre guardar el hito y entregar el objeto podría perder el premio, aunque no duplica intencionadamente la entrega.
+Reinicia el servidor tras modificar el archivo si NeoForge no recarga esa configuración. Un premio se registra como completado una sola vez por UUID y mundo; los objetos que no caben en el inventario se dejan caer junto al jugador. El contador de vuelo se escribe por tramos de 250 bloques para reducir I/O; un cierre abrupto puede perder como máximo 249 bloques de vuelo recientes. En este prototipo, un cierre abrupto entre guardar el hito y entregar el objeto podría perder el premio, aunque no duplica intencionadamente la entrega.
 
 ## Pendiente
 

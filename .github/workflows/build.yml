@@ -13,7 +13,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -24,5 +24,9 @@ jobs:
           java-version: '21'
       - name: Configure Gradle caching
         uses: gradle/actions/setup-gradle@v4
-      - name: Build all five independent mod projects
-        run: ./gradlew --no-daemon --console=plain --stacktrace --info clean build
+      - name: Verify Gradle wrapper
+        run: timeout 8m ./gradlew --no-daemon --console=plain --version
+      - name: Configure NeoForge projects
+        run: timeout 12m ./gradlew --no-daemon --console=plain --stacktrace --info help
+      - name: Compile all five independent mod projects
+        run: timeout 15m ./gradlew --no-daemon --console=plain --stacktrace --info clean build

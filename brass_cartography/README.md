@@ -8,7 +8,7 @@ Mod independiente para Minecraft 1.21.1 / NeoForge 21.1.267. La base y el muestr
 - **N:** mostrar u ocultar minimapa.
 - **F6:** mover el minimapa entre las cuatro esquinas.
 - **F7:** recorrer tres tamaños.
-- En el atlas se puede ocultar el marcador de muerte, borrarlo por completo y activar/desactivar el minimapa.
+- En el atlas hay leyenda de jugador/muerte/Waystone; se puede ocultar o borrar el marcador de muerte y activar/desactivar el minimapa.
 
 Las teclas se pueden reasignar desde Controles de Minecraft. La posición y el tamaño del minimapa, su visibilidad y el estado del marcador se guardan en `config/brass_cartography.properties`.
 

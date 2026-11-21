@@ -122,6 +122,16 @@ public final class AtlasScreen extends Screen {
                 graphics.fill(playerMarkerX - 2, playerMarkerY - 2, playerMarkerX + 3, playerMarkerY + 3, 0xFFE0B55E);
             }
         }
+        int legendX = mapLeft;
+        int legendY = mapTop - 12;
+        graphics.fill(legendX, legendY + 2, legendX + 5, legendY + 7, 0xFFE0B55E);
+        graphics.drawString(font, Component.translatable("legend.brass_cartography.player"), legendX + 7, legendY, 0xFF3D2D1E, false);
+        legendX += 49;
+        graphics.fill(legendX, legendY + 2, legendX + 5, legendY + 7, 0xFF9B3528);
+        graphics.drawString(font, Component.translatable("legend.brass_cartography.death"), legendX + 7, legendY, 0xFF3D2D1E, false);
+        legendX += 46;
+        graphics.fill(legendX, legendY + 2, legendX + 5, legendY + 7, 0xFF8E542D);
+        graphics.drawString(font, Component.translatable("legend.brass_cartography.waystone"), legendX + 7, legendY, 0xFF3D2D1E, false);
         graphics.drawString(font, Component.literal("N ↑"), mapLeft + GRID_SIDE * TILE - 30, mapTop - 13, 0xFF4B3520, false);
 
         Level level = minecraft == null ? null : minecraft.level;

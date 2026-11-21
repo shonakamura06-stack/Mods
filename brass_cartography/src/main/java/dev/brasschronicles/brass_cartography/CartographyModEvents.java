@@ -62,10 +62,10 @@ public final class CartographyModEvents {
         int tile = CartographyState.minimapTileSize();
         int size = tile * MapSampler.SIDE + 42;
         int corner = CartographyState.minimapCorner();
-        int left = (corner & 1) == 0
-                ? Math.max(8, minecraft.getWindow().getGuiScaledWidth() - size - 8) : 8;
-        int top = (corner & 2) == 0
-                ? 8 : Math.max(8, minecraft.getWindow().getGuiScaledHeight() - size - 8);
+        int left = corner >= 2 ? 8
+                : Math.max(8, minecraft.getWindow().getGuiScaledWidth() - size - 8);
+        int top = (corner == 1 || corner == 2)
+                ? Math.max(8, minecraft.getWindow().getGuiScaledHeight() - size - 8) : 8;
         float panelScale = size / 384.0f;
         graphics.pose().pushPose();
         graphics.pose().translate(left, top, 0.0F);

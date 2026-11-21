@@ -20,7 +20,10 @@ public final class CartographyClientTick {
             CartographyState.load();
             settingsLoaded = true;
         }
-        if (minecraft.level == null || minecraft.player == null) return;
+        if (minecraft.level == null || minecraft.player == null) {
+            CartographyState.MAP.flush();
+            return;
+        }
 
         var player = minecraft.player;
         var position = player.blockPosition();
@@ -30,6 +33,9 @@ public final class CartographyClientTick {
 
         if (CartographyModEvents.openAtlasKey().consumeClick()) {
             minecraft.setScreen(new AtlasScreen());
+        }
+        while (CartographyModEvents.toggleMinimapKey().consumeClick()) {
+            CartographyState.toggleMinimap();
         }
     }
 }

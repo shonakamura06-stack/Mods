@@ -25,14 +25,19 @@ public final class CartographyModEvents {
     private static final KeyMapping OPEN_ATLAS = new KeyMapping(
             "key.brass_cartography.open_atlas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M,
             "key.categories.brass_cartography");
+    private static final KeyMapping TOGGLE_MINIMAP = new KeyMapping(
+            "key.brass_cartography.toggle_minimap", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N,
+            "key.categories.brass_cartography");
 
     private CartographyModEvents() {}
 
     public static KeyMapping openAtlasKey() { return OPEN_ATLAS; }
+    public static KeyMapping toggleMinimapKey() { return TOGGLE_MINIMAP; }
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(OPEN_ATLAS);
+        event.register(TOGGLE_MINIMAP);
     }
 
     @SubscribeEvent

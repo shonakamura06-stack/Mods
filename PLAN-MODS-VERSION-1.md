@@ -61,8 +61,9 @@ El usuario pidió no usar imágenes generadas por IA. Los recursos finales será
 ## Estado de trabajo actual (21 de noviembre de 2026)
 
 - La captura fija Minecraft 1.21.1, NeoForge 21.1.267 y LWJGL 3.3.3.
-- Se creó la estructura Gradle de cinco subproyectos NeoForge independientes, sus entradas `@Mod`, metadata y un workflow de GitHub Actions para compilar con Java 21. Es solo el armazón de build; todavía no implementa las funciones finales ni se considera beta.
-- El paquete visual contiene tres estudios de arte dibujados de forma determinista (sin generador de imágenes): mapa de atlas, marco/panel y engranaje animado. Aún no están conectados a la GUI ni constituyen un resource pack terminado.
+- Se creó la estructura Gradle de cinco subproyectos NeoForge independientes, sus entradas `@Mod`, metadata y un workflow de GitHub Actions para compilar con Java 21.
+- **Primera función en código, aún sin compilación confirmada:** `brass_cartography` muestrea colores de superficie únicamente en chunks ya cargados, mantiene un historial local por dimensión con límite de 50.000 celdas, abre el atlas con M, oculta/muestra minimapa con N, y guarda el marcador de muerte con opción de ocultarlo desde la pantalla del atlas. El mapa aún no tiene etiquetas Waystones ni ha sido probado en juego.
+- El paquete visual contiene tres estudios de arte dibujados de forma determinista (sin generador de imágenes): mapa de atlas, marco/panel y engranaje animado. El panel ya se usa como marco del atlas; el resto aún no está conectado a una interfaz final ni constituye un resource pack terminado.
 - `mods version 1/` no tiene JARs: se añadirán únicamente después de implementar y verificar cada mod.
 - El archivo del Drive sí está localizado, pero `mods.zip` pesa 166 MB y el conector de Drive de esta sesión tiene límite de descarga de 100 MB. No he podido inspeccionar su interior; no se debe afirmar que sus dependencias o arranque estén verificados.
 - Este entorno no incluye `java` ni `gradle`. El workflow se usará como primera comprobación de compilación. Hasta que pase, no afirmaré que los JAR compilan.

@@ -1,0 +1,26 @@
+# Brass Expeditions — estado de desarrollo
+
+Este subproyecto implementa solo la primera capa del mod; no es todavía una campaña completa ni un JAR aprobado para el modpack.
+
+## Lo implementado
+
+- Seguimiento autoritativo del servidor: cada 40 ticks de juego examina únicamente el bioma y la dimensión actuales del jugador (sin barridos del mundo).
+- Progreso aislado por mundo y UUID de jugador, guardado en `data/brass_expeditions.json` dentro del mundo.
+- Comando de consulta personal: `/expeditions`.
+- Dos hitos iniciales: Surveyor (biomas distintos) y Far Horizons (dimensiones distintas). Los IDs de dimensión se leen de las claves registradas, no de nombres supuestos; cualquier dimensión modded puede contar.
+- Umbrales y premios de ítem opcionales ajustables con la configuración `SERVER` de NeoForge. Si se configura un ítem inexistente, no se entrega y se escribe una advertencia en el log.
+
+## Configuración
+
+NeoForge crea la configuración de servidor `brass_expeditions-server.toml` en `serverconfig/`. Valores disponibles:
+
+- `surveyBiomesGoal` (predeterminado 10)
+- `visitDimensionsGoal` (predeterminado 3)
+- `surveyRewardItem` y `surveyRewardCount` (predeterminado: premio desactivado)
+- `dimensionsRewardItem` y `dimensionsRewardCount` (predeterminado: premio desactivado)
+
+Reinicia el servidor tras modificar el archivo si NeoForge no recarga esa configuración. Un premio se registra como completado una sola vez por UUID y mundo; los objetos que no caben en el inventario se dejan caer junto al jugador. En este prototipo, un cierre abrupto entre guardar el hito y entregar el objeto podría perder el premio, aunque no duplica intencionadamente la entrega.
+
+## Pendiente
+
+Campañas con etapas y objetivos definidos por datos, hallazgos, vuelo, mensajes de introducción, pruebas anti-exploit, comprobación del guardado y entrega de premios dentro de un servidor, y pruebas con Northstar y otros mods de dimensiones. La compilación CI no sustituye estas pruebas.

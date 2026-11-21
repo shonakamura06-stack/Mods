@@ -1,5 +1,6 @@
 """Draw original, deterministic brass-and-parchment Minecraft GUI sprites."""
 from pathlib import Path
+from math import cos, pi, sin
 from PIL import Image, ImageDraw
 import random
 
@@ -34,6 +35,16 @@ def bevel_sprite(name, fill, dark, gold, ink, size=(200, 20), border=3):
         for y in (2, height - 3):
             draw.point((x, y), fill=(242, 205, 123, 255))
     if name.startswith("button"):
+        # Small original gear seals at the ends keep the center clear for text.
+        for cx in (10, width - 11):
+            points = []
+            for index in range(16):
+                angle = index * pi / 8
+                radius = 4.2 if index % 2 == 0 else 3.0
+                points.append((round(cx + radius * cos(angle)),
+                               round(height / 2 + radius * sin(angle))))
+            draw.polygon(points, fill=gold, outline=dark)
+            draw.ellipse((cx - 1, height // 2 - 1, cx + 1, height // 2 + 1), fill=ink)
         # Sparse deterministic fibers make the center parchment-like without visual noise.
         for _ in range(95):
             x = random.randint(border + 2, width - border - 3)

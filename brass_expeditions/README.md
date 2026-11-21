@@ -4,7 +4,7 @@ Este subproyecto implementa solo la primera capa del mod; no es todavía una cam
 
 ## Lo implementado
 
-- Seguimiento autoritativo del servidor: cada 40 ticks de juego examina únicamente el bioma y la dimensión actuales del jugador (sin barridos del mundo).
+- Seguimiento autoritativo del servidor: cada 40 ticks examina únicamente el bioma/dimensión actuales; los cambios de dimensión se registran en el evento del servidor, así que una visita corta no se pierde. No hay barridos del mundo.
 - Progreso aislado por mundo y UUID de jugador, guardado en `data/brass_expeditions.json` dentro del mundo.
 - Comando de consulta personal: `/expeditions`.
 - Dos hitos iniciales: Surveyor (biomas distintos) y Far Horizons (dimensiones distintas). Los IDs de dimensión se leen de las claves registradas, no de nombres supuestos; cualquier dimensión modded puede contar.

@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /** Server-only discovery sampling and a per-player progress command. */
@@ -18,6 +19,14 @@ public final class ExpeditionEvents {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.isSpectator()) return;
         if (player.serverLevel().getGameTime() % 40L != 0L) return;
         ExpeditionTracker.sample(player);
+    }
+
+    @SubscribeEvent
+    public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && !player.isSpectator()) {
+            // Record short dimension visits immediately instead of waiting for the periodic sample.
+            ExpeditionTracker.sample(player);
+        }
     }
 
     @SubscribeEvent

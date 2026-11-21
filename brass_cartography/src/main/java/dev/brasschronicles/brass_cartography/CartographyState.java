@@ -62,6 +62,7 @@ public final class CartographyState {
     }
 
     public static void toggleDeathMarker() { deathMarkerVisible = !deathMarkerVisible; save(); }
+    public static void clearDeathMarker() { hasDeath = false; deathDimension = ""; save(); }
     public static void toggleMinimap() { minimapVisible = !minimapVisible; save(); }
     public static boolean deathMarkerVisible() { return deathMarkerVisible; }
     public static boolean minimapVisible() { return minimapVisible; }

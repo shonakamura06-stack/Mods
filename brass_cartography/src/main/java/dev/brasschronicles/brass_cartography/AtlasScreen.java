@@ -30,13 +30,19 @@ public final class AtlasScreen extends Screen {
         addRenderableWidget(Button.builder(deathLabel(), b -> {
             CartographyState.toggleDeathMarker();
             b.setMessage(deathLabel());
-        }).bounds(left + 17, top + 350, 110, 20).build());
+        }).bounds(left + 8, top + 350, 84, 20).build());
+        Button clearDeath = Button.builder(Component.translatable("screen.brass_cartography.clear_death"), b -> {
+            CartographyState.clearDeathMarker();
+            b.active = false;
+        }).bounds(left + 104, top + 350, 84, 20).build();
+        clearDeath.active = CartographyState.hasDeath();
+        addRenderableWidget(clearDeath);
         addRenderableWidget(Button.builder(minimapLabel(), b -> {
             CartographyState.toggleMinimap();
             b.setMessage(minimapLabel());
-        }).bounds(left + 137, top + 350, 110, 20).build());
+        }).bounds(left + 200, top + 350, 84, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose())
-                .bounds(left + 257, top + 350, 110, 20).build());
+                .bounds(left + 296, top + 350, 84, 20).build());
     }
 
     private static Component deathLabel() {

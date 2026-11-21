@@ -5,6 +5,7 @@
   "screen.brass_cartography.atlas": "Field Atlas",
   "screen.brass_cartography.death_on": "Death marker: visible",
   "screen.brass_cartography.death_off": "Death marker: hidden",
+  "screen.brass_cartography.clear_death": "Clear death",
   "screen.brass_cartography.minimap_on": "Minimap: visible",
   "screen.brass_cartography.minimap_off": "Minimap: hidden"
 }

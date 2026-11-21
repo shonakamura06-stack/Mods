@@ -5,6 +5,7 @@
   "screen.brass_cartography.atlas": "Atlas de campo",
   "screen.brass_cartography.death_on": "Marcador de muerte: visible",
   "screen.brass_cartography.death_off": "Marcador de muerte: oculto",
+  "screen.brass_cartography.clear_death": "Borrar muerte",
   "screen.brass_cartography.minimap_on": "Minimapa: visible",
   "screen.brass_cartography.minimap_off": "Minimapa: oculto"
 }

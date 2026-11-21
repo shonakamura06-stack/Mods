@@ -50,6 +50,8 @@ jobs:
           echo '### Gradle diagnostics (last 120 lines)' >> "$GITHUB_STEP_SUMMARY"
           echo '```text' >> "$GITHUB_STEP_SUMMARY"
           if [[ -f gradle-build.log ]]; then
+            echo '#### Compiler and failure markers' >> "$GITHUB_STEP_SUMMARY"
+            grep -E -i '(^e: |error:|cannot find symbol|symbol:|location:|what went wrong|execution failed|could not resolve|failed to)' gradle-build.log | tail -n 30 >> "$GITHUB_STEP_SUMMARY" || true
             tail -n 120 gradle-build.log >> "$GITHUB_STEP_SUMMARY"
             while IFS= read -r line; do
               escaped=${line//'%'/'%25'}
